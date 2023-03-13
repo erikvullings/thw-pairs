@@ -1,0 +1,125 @@
+---
+version: "3.9"
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.3.1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.1
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+      - "3501:3501"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: LISTENER_BOB://${BROKER},LISTENER_FRED://broker:9092,LISTENER_ALICE://broker:3501
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_BOB://${BROKER},LISTENER_FRED://localhost:9092,LISTENER_ALICE://${HOST}:3501
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_BOB:PLAINTEXT,LISTENER_FRED:PLAINTEXT,LISTENER_ALICE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_BOB
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760
+      KAFKA_MESSAGE_MAX_BYTES: 10485760
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: broker
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=broker -Dcom.sun.management.jmxremote.rmi.port=9101
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.3.1
+    depends_on:
+      - broker
+    ports:
+      - "3502:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "${BROKER}"
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  # For inspecting KAFKA
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 3600:8080
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${BROKER}
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      KAFKA_CLUSTERS_0_JMXPORT: 9101
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: ${SCHEMA}
+      # KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: first
+      # KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://kafka-connect0:8083
+
+  # Configuring the environment
+
+  # bootstrapper:
+  #   container_name: bootstrapper
+  #   image: drivereu/silent-producer:3.0.3
+  #   hostname: bootstrapper
+  #   depends_on:
+  #     - zookeeper
+  #     - broker
+  #     - schema-registry
+  #     - kafka-ui
+  #   environment:
+  #     SLEEP: 10000 # Wait before registering schemas
+  #     KAFKA_HOST: ${BROKER}
+  #     SCHEMA_REGISTRY: ${SCHEMA}
+  #     PARTITION_SPECIFICATION: "system_heartbeat:1:360000"
+  #   volumes:
+  #     - ./../schemas:/app/src/schemas
+
+  time_service:
+    image: drivereu/test-bed-time-service:latest
+    links:
+      - broker
+      - schema-registry
+    ports:
+      - "8100:8100"
+    environment:
+      KAFKA_BROKER_URL: ${BROKER}
+      SCHEMA_REGISTRY_URL: ${SCHEMA}
+      AUTO_REGISTER_SCHEMAS: "true"
+    volumes:
+      - ../schemas:/app/schemas
+
+  trial_management_tool:
+    image: drivereu/trial-management-tool:latest
+    profiles: ["tmt"]
+    links:
+      - broker
+      - schema-registry
+    ports:
+      - "3210:3210"
+    environment:
+      CLIENT_ID: TB-TrialMgmt
+      KAFKA_HOST: ${BROKER}
+      SCHEMA_REGISTRY: ${SCHEMA}
+      TRIAL_MANAGER_SERVER_PORT: 3210
+      PRODUCE: system_tm_role_player,system_tm_session_mgmt
+      SSL: "false"
+      SSL_PFX: certs/TB-TrialMgmt.p12
+      SSL_PASSPHRASE: changeit
+      SSL_CA: certs/test-ca.pem
+    volumes:
+      - trial-data:/app/trials
+
+volumes:
+  trial-data:
