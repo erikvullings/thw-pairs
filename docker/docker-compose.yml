@@ -69,22 +69,22 @@ services:
 
   # Configuring the environment
 
-  # bootstrapper:
-  #   container_name: bootstrapper
-  #   image: drivereu/silent-producer:3.0.3
-  #   hostname: bootstrapper
-  #   depends_on:
-  #     - zookeeper
-  #     - broker
-  #     - schema-registry
-  #     - kafka-ui
-  #   environment:
-  #     SLEEP: 10000 # Wait before registering schemas
-  #     KAFKA_HOST: ${BROKER}
-  #     SCHEMA_REGISTRY: ${SCHEMA}
-  #     PARTITION_SPECIFICATION: "system_heartbeat:1:360000"
-  #   volumes:
-  #     - ./../schemas:/app/src/schemas
+  bootstrapper:
+    container_name: bootstrapper
+    image: drivereu/silent-producer:3.0.3
+    hostname: bootstrapper
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+      - kafka-ui
+    environment:
+      SLEEP: 10000 # Wait before registering schemas
+      KAFKA_HOST: ${BROKER}
+      SCHEMA_REGISTRY: ${SCHEMA}
+      PARTITION_SPECIFICATION: "system_heartbeat:1:360000"
+    volumes:
+      - ../schemas:/app/src/schemas
 
   time_service:
     image: drivereu/test-bed-time-service:latest
@@ -96,9 +96,9 @@ services:
     environment:
       KAFKA_BROKER_URL: ${BROKER}
       SCHEMA_REGISTRY_URL: ${SCHEMA}
-      AUTO_REGISTER_SCHEMAS: "true"
-    volumes:
-      - ../schemas:/app/schemas
+      AUTO_REGISTER_SCHEMAS: "false"
+    # volumes:
+    #   - ../schemas:/app/schemas
 
   trial_management_tool:
     image: drivereu/trial-management-tool:latest
