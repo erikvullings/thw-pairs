@@ -84,22 +84,20 @@ services:
     volumes:
       - ../schemas:/app/src/schemas
 
-  # time_service:
-  #   image: drivereu/test-bed-time-service:latest
-  #   links:
-  #     - broker
-  #     - schema-registry
-  #   ports:
-  #     - "8100:8100"
-  #   environment:
-  #     KAFKA_BROKER_URL: ${BROKER}
-  #     SCHEMA_REGISTRY_URL: ${SCHEMA}
-  #     AUTO_REGISTER_SCHEMAS: "false"
-  #   # volumes:
-  #   #   - ../schemas:/app/schemas
+  time_service:
+    image: drivereu/test-bed-time-service:latest
+    links:
+      - broker
+      - schema-registry
+    ports:
+      - "8100:8100"
+    environment:
+      KAFKA_BROKER_URL: ${BROKER}
+      SCHEMA_REGISTRY_URL: ${SCHEMA}
+      AUTO_REGISTER_SCHEMAS: "false"
 
   trial_management_tool:
-    image: drivereu/trial-management-tool:latest
+    image: strategyeu/trial-management-tool:naas
     profiles: ["tmt"]
     links:
       - broker
@@ -111,7 +109,7 @@ services:
       KAFKA_HOST: ${BROKER}
       SCHEMA_REGISTRY: ${SCHEMA}
       TRIAL_MANAGER_SERVER_PORT: 3210
-      PRODUCE: system_tm_role_player,system_tm_session_mgmt
+      PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post
       SSL: "false"
       SSL_PFX: certs/TB-TrialMgmt.p12
       SSL_PASSPHRASE: changeit
