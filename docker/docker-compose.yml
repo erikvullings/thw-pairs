@@ -2,7 +2,6 @@
 version: "3.9"
 services:
   zookeeper:
-    container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.1
     ports:
       - "2181:2181"
@@ -70,8 +69,7 @@ services:
   # Configuring the environment
 
   bootstrapper:
-    container_name: bootstrapper
-    image: drivereu/silent-producer:3.0.3
+    image: drivereu/silent-producer:3.0.5
     hostname: bootstrapper
     depends_on:
       - zookeeper
@@ -82,23 +80,23 @@ services:
       SLEEP: 10000 # Wait before registering schemas
       KAFKA_HOST: ${BROKER}
       SCHEMA_REGISTRY: ${SCHEMA}
-      PARTITION_SPECIFICATION: "system_heartbeat:1:360000"
+      PARTITION_SPECIFICATION: "system_heartbeat:1:360000, standard_cap:2:12345678"
     volumes:
       - ../schemas:/app/src/schemas
 
-  time_service:
-    image: drivereu/test-bed-time-service:latest
-    links:
-      - broker
-      - schema-registry
-    ports:
-      - "8100:8100"
-    environment:
-      KAFKA_BROKER_URL: ${BROKER}
-      SCHEMA_REGISTRY_URL: ${SCHEMA}
-      AUTO_REGISTER_SCHEMAS: "false"
-    # volumes:
-    #   - ../schemas:/app/schemas
+  # time_service:
+  #   image: drivereu/test-bed-time-service:latest
+  #   links:
+  #     - broker
+  #     - schema-registry
+  #   ports:
+  #     - "8100:8100"
+  #   environment:
+  #     KAFKA_BROKER_URL: ${BROKER}
+  #     SCHEMA_REGISTRY_URL: ${SCHEMA}
+  #     AUTO_REGISTER_SCHEMAS: "false"
+  #   # volumes:
+  #   #   - ../schemas:/app/schemas
 
   trial_management_tool:
     image: drivereu/trial-management-tool:latest
