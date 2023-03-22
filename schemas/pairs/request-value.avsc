@@ -1,0 +1,7 @@
+{
+  "name": "Request",
+  "namespace": "de.thw.request",
+  "doc": "A request for certain articles",
+  "type": "map",
+  "values": "string"
+}

@@ -109,12 +109,13 @@ services:
       KAFKA_HOST: ${BROKER}
       SCHEMA_REGISTRY: ${SCHEMA}
       TRIAL_MANAGER_SERVER_PORT: 3210
-      PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post
+      PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post,inventory,request,resource
       SSL: "false"
       SSL_PFX: certs/TB-TrialMgmt.p12
       SSL_PASSPHRASE: changeit
       SSL_CA: certs/test-ca.pem
     volumes:
+      - ./topics:/app/topics
       - trial-data:/app/trials
 
 volumes:
