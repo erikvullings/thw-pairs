@@ -101,7 +101,7 @@ services:
       - ../schemas:/app/schemas
 
   trial_management_tool:
-    image: drivereu/trial-management-tool:latest
+    image: strategyeu/trial-management-tool:pairs
     profiles: ["tmt"]
     links:
       - broker
