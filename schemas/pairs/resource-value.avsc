@@ -1,0 +1,7 @@
+{
+  "name": "Resource",
+  "namespace": "de.thw.resource",
+  "doc": "A resource (human / system), either available or requested",
+  "type": "map",
+  "values": "string"
+}

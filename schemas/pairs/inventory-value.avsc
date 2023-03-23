@@ -1,0 +1,7 @@
+{
+  "name": "Inventory",
+  "namespace": "de.thw.inventory",
+  "doc": "A description of the inventory at a certain location.",
+  "type": "map",
+  "values": "string"
+}

@@ -2,7 +2,6 @@
 version: "3.9"
 services:
   zookeeper:
-    container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.1
     ports:
       - "2181:2181"
@@ -69,22 +68,21 @@ services:
 
   # Configuring the environment
 
-  # bootstrapper:
-  #   container_name: bootstrapper
-  #   image: drivereu/silent-producer:3.0.3
-  #   hostname: bootstrapper
-  #   depends_on:
-  #     - zookeeper
-  #     - broker
-  #     - schema-registry
-  #     - kafka-ui
-  #   environment:
-  #     SLEEP: 10000 # Wait before registering schemas
-  #     KAFKA_HOST: ${BROKER}
-  #     SCHEMA_REGISTRY: ${SCHEMA}
-  #     PARTITION_SPECIFICATION: "system_heartbeat:1:360000"
-  #   volumes:
-  #     - ./../schemas:/app/src/schemas
+  bootstrapper:
+    image: drivereu/silent-producer:3.0.5
+    hostname: bootstrapper
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+      - kafka-ui
+    environment:
+      SLEEP: 10000 # Wait before registering schemas
+      KAFKA_HOST: ${BROKER}
+      SCHEMA_REGISTRY: ${SCHEMA}
+      PARTITION_SPECIFICATION: "system_heartbeat:1:360000, standard_cap:2:12345678"
+    volumes:
+      - ../schemas:/app/src/schemas
 
   time_service:
     image: drivereu/test-bed-time-service:latest
@@ -96,9 +94,7 @@ services:
     environment:
       KAFKA_BROKER_URL: ${BROKER}
       SCHEMA_REGISTRY_URL: ${SCHEMA}
-      AUTO_REGISTER_SCHEMAS: "true"
-    volumes:
-      - ../schemas:/app/schemas
+      AUTO_REGISTER_SCHEMAS: "false"
 
   trial_management_tool:
     image: strategyeu/trial-management-tool:pairs
@@ -113,12 +109,13 @@ services:
       KAFKA_HOST: ${BROKER}
       SCHEMA_REGISTRY: ${SCHEMA}
       TRIAL_MANAGER_SERVER_PORT: 3210
-      PRODUCE: system_tm_role_player,system_tm_session_mgmt
+      PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post,inventory,request,resource
       SSL: "false"
       SSL_PFX: certs/TB-TrialMgmt.p12
       SSL_PASSPHRASE: changeit
       SSL_CA: certs/test-ca.pem
     volumes:
+      - ./topics:/app/topics
       - trial-data:/app/trials
 
 volumes:

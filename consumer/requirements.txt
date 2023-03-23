@@ -1,0 +1,5 @@
+pykafka
+avro-python3
+requests
+environs
+osint-python-test-bed-adapter
