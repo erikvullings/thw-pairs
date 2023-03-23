@@ -16,7 +16,7 @@ class ConsumerExample:
         _env = Env()
 
         CONSUME_ENV = _env('CONSUME', "request,inventory,resource")
-        PRODUCE_ENV = _env('PRODUCE', None)
+        # PRODUCE_ENV = _env('PRODUCE', None)
         CLIENT_ID_ENV = _env('CLIENT_ID', 'CONSUMER' +
                              str(random.randint(0, 9999999)))
 
@@ -25,7 +25,7 @@ class ConsumerExample:
         PARTITIONER = _env("PARTITIONER", "random")
         MESSAGE_MAX_BYTES = _env.int('MESSAGE_MAX_BYTES', 1000000)
         HEARTBEAT_INTERVAL = _env.int('HEARTBEAT_INTERVAL', 10)
-        OFFSET_TYPE = _env('OFFSET_TYPE', 'latest')
+        OFFSET_TYPE = _env('OFFSET_TYPE', 'latest')  # earliest
 
         tb_options = {
             "kafka_host": KAFKA_HOST,
