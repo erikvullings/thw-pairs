@@ -1,113 +1,133 @@
 ---
 version: "3.9"
+name: redpanda
+
+networks:
+  redpanda_network:
+    driver: bridge
+
+volumes:
+  redpanda-0: null
+  trial-data:
+
 services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.1
+  redpanda-0:
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      # Address the broker advertises to clients that connect to the Kafka API.
+      # Use the internal addresses to connect to the Redpanda brokers'
+      # from inside the same Docker network.
+      # Use the external addresses to connect to the Redpanda brokers'
+      # from outside the Docker network.
+      - --advertise-kafka-addr internal://redpanda-0:9092,external://localhost:${BROKER_PORT}
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
+      # Address the broker advertises to clients that connect to the HTTP Proxy.
+      - --advertise-pandaproxy-addr internal://redpanda-0:8082,external://localhost:18082
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:${SCHEMA_PORT}
+      # Redpanda brokers use the RPC API to communicate with eachother internally.
+      - --rpc-addr redpanda-0:33145
+      - --advertise-rpc-addr redpanda-0:33145
+      # - --group_min_session_timeout_ms 6000
+      # - --group_max_session_timeout_ms 300000
+      # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
+      - --smp 1
+      # The amount of memory to make available to Redpanda.
+      - --memory 1G
+      # Mode dev-container uses well-known configuration properties for development in containers.
+      - --mode dev-container
+      # enable logs for debugging.
+      - --default-log-level=debug
+      # cluster level retention time in ms (90 days, default is 7 days or 604800000):
+      # See https://docs.redpanda.com/docs/manage/cluster-maintenance/disk-utilization/
+      # - --set delete_retention_ms=7776000000
+      # - --set retention_ms=7776000000
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.8
+    container_name: redpanda-0
+    volumes:
+      - redpanda-0:/var/lib/redpanda/data
+    networks:
+      - redpanda_network
     ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      - ${BROKER_PORT}:19092
+      - ${SCHEMA_PORT}:18081
+      - 18082:18082
+      - 19644:9644
+    # environment:
+    #   - KAFKA_LOG_RETENTION_MS=7776000000
+    #   - KAFKA_DELETE_RETENTION_MS=7776000000
+    #   - KAFKA_RETENTION_MS=7776000000
 
-  broker:
-    image: confluentinc/cp-kafka:7.3.1
+  console:
+    image: docker.redpanda.com/vectorized/console:v2.3.3
     depends_on:
-      - zookeeper
+      - redpanda-0
+    networks:
+      - redpanda_network
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     ports:
-      - "29092:29092"
-      - "9092:9092"
-      - "3501:3501"
-      - "9101:9101"
+      - 8600:8080
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: LISTENER_BOB://${BROKER},LISTENER_FRED://broker:9092,LISTENER_ALICE://broker:3501
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_BOB://${BROKER},LISTENER_FRED://localhost:9092,LISTENER_ALICE://${HOST}:3501
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_BOB:PLAINTEXT,LISTENER_FRED:PLAINTEXT,LISTENER_ALICE:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_BOB
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760
-      KAFKA_MESSAGE_MAX_BYTES: 10485760
-      KAFKA_JMX_PORT: 9101
-      KAFKA_JMX_HOSTNAME: broker
-      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=broker -Dcom.sun.management.jmxremote.rmi.port=9101
-
-  schema-registry:
-    image: confluentinc/cp-schema-registry:7.3.1
-    depends_on:
-      - broker
-    ports:
-      - "3502:8081"
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "${BROKER}"
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-
-  # For inspecting KAFKA
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    ports:
-      - 3600:8080
-    depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${BROKER}
-      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-      KAFKA_CLUSTERS_0_JMXPORT: 9101
-      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: ${SCHEMA}
-      # KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: first
-      # KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://kafka-connect0:8083
-
-  # Configuring the environment
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda-0:9092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://redpanda-0:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda-0:9644"]
 
   bootstrapper:
-    image: drivereu/silent-producer:3.0.5
-    hostname: bootstrapper
-    depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
-      - kafka-ui
+    image: docker.io/drivereu/silent-producer:3.0.9
+    # image: silent-producer:latest
+    networks:
+      - redpanda_network
     environment:
-      SLEEP: 10000 # Wait before registering schemas
-      KAFKA_HOST: ${BROKER}
-      SCHEMA_REGISTRY: ${SCHEMA}
-      PARTITION_SPECIFICATION: "system_heartbeat:1:360000, standard_cap:2:12345678"
+      SLEEP: 1000 # Wait before registering schemas
+      KAFKA_HOST: redpanda-0:9092
+      SCHEMA_REGISTRY: redpanda-0:8081
+      PARTITION_SPECIFICATION: |
+        system_heartbeat:1:600000
+    restart: on-failure
+    depends_on:
+      - redpanda-0
     volumes:
       - ../schemas:/app/src/schemas
 
+  # Services
+
   time_service:
     image: drivereu/test-bed-time-service:latest
-    links:
-      - broker
-      - schema-registry
+    profiles: ["time"]
+    depends_on:
+      - redpanda-0
     ports:
       - "8100:8100"
+    networks:
+      - redpanda_network
     environment:
-      KAFKA_BROKER_URL: ${BROKER}
-      SCHEMA_REGISTRY_URL: ${SCHEMA}
+      KAFKA_BROKER_URL: redpanda-0:9092
+      SCHEMA_REGISTRY_URL: redpanda-0:8081
       AUTO_REGISTER_SCHEMAS: "false"
 
   trial_management_tool:
     image: strategyeu/trial-management-tool:pairs
     profiles: ["tmt"]
-    links:
-      - broker
-      - schema-registry
+    depends_on:
+      - redpanda-0
     ports:
       - "3210:3210"
+    networks:
+      - redpanda_network
     environment:
       CLIENT_ID: TB-TrialMgmt
-      KAFKA_HOST: ${BROKER}
-      SCHEMA_REGISTRY: ${SCHEMA}
+      KAFKA_HOST: redpanda-0:9092
+      SCHEMA_REGISTRY: redpanda-0:8081
       TRIAL_MANAGER_SERVER_PORT: 3210
       PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post,inventory,request,resource
       SSL: "false"
@@ -117,6 +137,3 @@ services:
     volumes:
       - ./topics:/app/topics
       - trial-data:/app/trials
-
-volumes:
-  trial-data:
