@@ -16,17 +16,36 @@ cd docker
 copy .env_example .env
 ```
 
+## Prepare
+
+See the `prepare` folder to prepare your maps. It is based on the setup as described in [gis-to-go](https://github.com/erikvullings/gis-to-go). Note that you only have the prepare the volumes. You do not need to run them, as they will be started here. 
+
+Merge the final `./prepare/.env` file with the current `./env` file.
+
 ## Usage
 
-To run the environment (Apache Kafka, Zookeeper, Schema registry, Kafka UI, TMT and Time service):
+To run the environment:
 
 ```bash
 cd docker
 docker compose up -d
 ```
 
+## Exposed UI services
+
+- [TMT](http://localhost/tmt)
+- [Time service](http://localhost/time)
+- [Redpanda console](http://localhost/console)
+
 ## Exposed services
 
-- [Kafka UI](http://localhost:3600)
-- [TMT](http://localhost:3388/tmt)
-- [Time service](http://localhost:8100/time)
+- [Kafka broker](http://localhost:3501)
+- [Schema registry](http://localhost:3502)
+- [MapTiler](http://localhost/maptiler)
+
+### APIs
+
+- [Kafka REST API](http://localhost:3500/topics)
+- [Schema registry API](http://localhost:3502/subjects)
+- [Nominatim API](http://localhost/nominatim)
+- [Valhalla API](http://localhost/valhalla)

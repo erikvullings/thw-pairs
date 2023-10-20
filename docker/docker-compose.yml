@@ -1,14 +1,25 @@
 ---
 version: "3.9"
-name: redpanda
 
 networks:
-  redpanda_network:
+  tmt_network:
     driver: bridge
 
 volumes:
   redpanda-0: null
   trial-data:
+  gis-services-valhalla:
+    external: true
+    name: gis-services-valhalla
+  gis-services-maptiler:
+    external: true
+    name: gis-services-maptiler
+  gis-services-nominatim-data:
+    external: true
+    name: gis-services-nominatim-data
+  gis-services-nominatim-postgress:
+    external: true
+    name: gis-services-nominatim-postgress
 
 services:
   redpanda-0:
@@ -21,16 +32,14 @@ services:
       # from inside the same Docker network.
       # Use the external addresses to connect to the Redpanda brokers'
       # from outside the Docker network.
-      - --advertise-kafka-addr internal://redpanda-0:9092,external://localhost:${BROKER_PORT}
+      - --advertise-kafka-addr internal://redpanda-0:9092,external://0.0.0.0:${BROKER_PORT}
       - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
       # Address the broker advertises to clients that connect to the HTTP Proxy.
-      - --advertise-pandaproxy-addr internal://redpanda-0:8082,external://localhost:18082
-      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:${SCHEMA_PORT}
+      - --advertise-pandaproxy-addr internal://redpanda-0:8082,external://localhost:${REST_PORT}
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:18081
       # Redpanda brokers use the RPC API to communicate with eachother internally.
       - --rpc-addr redpanda-0:33145
       - --advertise-rpc-addr redpanda-0:33145
-      # - --group_min_session_timeout_ms 6000
-      # - --group_max_session_timeout_ms 300000
       # Tells Seastar (the framework Redpanda uses under the hood) to use 1 core on the system.
       - --smp 1
       # The amount of memory to make available to Redpanda.
@@ -39,32 +48,25 @@ services:
       - --mode dev-container
       # enable logs for debugging.
       - --default-log-level=debug
-      # cluster level retention time in ms (90 days, default is 7 days or 604800000):
-      # See https://docs.redpanda.com/docs/manage/cluster-maintenance/disk-utilization/
-      # - --set delete_retention_ms=7776000000
-      # - --set retention_ms=7776000000
-    image: docker.redpanda.com/redpandadata/redpanda:v23.2.8
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.12
     container_name: redpanda-0
     volumes:
       - redpanda-0:/var/lib/redpanda/data
     networks:
-      - redpanda_network
+      - tmt_network
     ports:
       - ${BROKER_PORT}:19092
       - ${SCHEMA_PORT}:18081
-      - 18082:18082
+      - ${REST_PORT}:18082
       - 19644:9644
-    # environment:
-    #   - KAFKA_LOG_RETENTION_MS=7776000000
-    #   - KAFKA_DELETE_RETENTION_MS=7776000000
-    #   - KAFKA_RETENTION_MS=7776000000
 
   console:
-    image: docker.redpanda.com/vectorized/console:v2.3.3
+    container_name: console
+    image: docker.redpanda.com/vectorized/console:v2.3.5
     depends_on:
       - redpanda-0
     networks:
-      - redpanda_network
+      - tmt_network
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     ports:
@@ -84,9 +86,8 @@ services:
 
   bootstrapper:
     image: docker.io/drivereu/silent-producer:3.0.9
-    # image: silent-producer:latest
     networks:
-      - redpanda_network
+      - tmt_network
     environment:
       SLEEP: 1000 # Wait before registering schemas
       KAFKA_HOST: redpanda-0:9092
@@ -99,37 +100,55 @@ services:
     volumes:
       - ../schemas:/app/src/schemas
 
+  # Reverse proxy
+
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: nginx:stable
+    networks:
+      - tmt_network
+    ports:
+      - "${DOCKERPORT}:80"
+    volumes:
+      - ./local-conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
   # Services
 
   time_service:
-    image: drivereu/test-bed-time-service:latest
-    profiles: ["time"]
+    container_name: time
+    image: drivereu/test-bed-time-service:2.0.9
     depends_on:
       - redpanda-0
     ports:
       - "8100:8100"
     networks:
-      - redpanda_network
+      - tmt_network
+    volumes:
+      - ./videos:/app/videos
     environment:
       KAFKA_BROKER_URL: redpanda-0:9092
       SCHEMA_REGISTRY_URL: redpanda-0:8081
       AUTO_REGISTER_SCHEMAS: "false"
+      BILLBOARD: "true"
 
   trial_management_tool:
+    container_name: tmt
     image: strategyeu/trial-management-tool:pairs
-    profiles: ["tmt"]
     depends_on:
       - redpanda-0
     ports:
       - "3210:3210"
     networks:
-      - redpanda_network
+      - tmt_network
     environment:
       CLIENT_ID: TB-TrialMgmt
       KAFKA_HOST: redpanda-0:9092
       SCHEMA_REGISTRY: redpanda-0:8081
       TRIAL_MANAGER_SERVER_PORT: 3210
-      PRODUCE: system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,simulation_request_startinject,simulation_entity_featurecollection,simulation_entity_post,inventory,request,resource
+      PRODUCE: >
+        system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,
+        simulation_request_startinject,simulation_entity_featurecollection,
+        simulation_entity_post,inventory,request,resource,system_tm_info_msg
       SSL: "false"
       SSL_PFX: certs/TB-TrialMgmt.p12
       SSL_PASSPHRASE: changeit
@@ -137,3 +156,44 @@ services:
     volumes:
       - ./topics:/app/topics
       - trial-data:/app/trials
+
+  # GIS services
+
+  valhalla:
+    container_name: gis-services-valhalla
+    image: gisops/valhalla:${VALHALLA_VERSION}
+    networks:
+      - tmt_network
+    volumes:
+      - gis-services-valhalla:/custom_files
+    environment:
+      - use_tiles_ignore_pbf=True
+      - build_elevation=False
+      - build_admins=False
+      - build_time_zones=False
+      - build_tar=False
+      - force_rebuild=False
+
+  maptiler:
+    container_name: gis-services-maptiler
+    image: maptiler/tileserver-gl:${MAPTILER_VERSION}
+    networks:
+      - tmt_network
+    volumes:
+      - gis-services-maptiler:/data
+    command:
+      - "-u ${DOCKERPROTOCOL}${DOCKERDOMAIN}:${DOCKERPORT}/maptiler"
+
+  # https://github.com/mediagis/nominatim-docker/tree/master/4.3
+  # Test http://localhost/nominatim/search?q=Monaco&format=json&addressdetails=1&limit=1&polygon_svg=1
+  nominatim:
+    container_name: gis-services-nominatim
+    image: mediagis/nominatim:${NOMINATIM_VERSION}
+    networks:
+      - tmt_network
+    volumes:
+      - gis-services-nominatim-data:/nominatim/data/
+      - gis-services-nominatim-postgress:/var/lib/postgresql/12/main
+    environment:
+      - PBF_PATH=/nominatim/data/merged_areas.osm.pbf
+      - FREEZE=true
