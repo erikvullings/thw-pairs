@@ -1,0 +1,55 @@
+services:
+  nginx:
+    container_name: gis-services-nginx
+    image: nginx:stable
+    ports:
+      - "${DOCKERPORT}:80"
+    volumes:
+      - ./local-conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  valhalla:
+    container_name: gis-services-valhalla
+    image: gisops/valhalla:${VALHALLA_VERSION}
+    volumes:
+      - gis-services-valhalla:/custom_files
+    environment:
+      - use_tiles_ignore_pbf=True
+      - build_elevation=False
+      - build_admins=False
+      - build_time_zones=False
+      - build_tar=False
+      - force_rebuild=False
+
+  maptiler:
+    container_name: gis-services-maptiler
+    image: maptiler/tileserver-gl:${MAPTILER_VERSION}
+    volumes:
+      - gis-services-maptiler:/data
+    command:
+      - "-u ${DOCKERPROTOCOL}${DOCKERDOMAIN}:${DOCKERPORT}/maptiler"
+
+  # https://github.com/mediagis/nominatim-docker/tree/master/4.3
+  # Test http://localhost/nominatim/search?q=Monaco&format=json&addressdetails=1&limit=1&polygon_svg=1
+  nominatim:
+    container_name: gis-services-nominatim
+    image: mediagis/nominatim:${NOMINATIM_VERSION}
+    volumes:
+      - gis-services-nominatim-data:/nominatim/data/
+      - gis-services-nominatim-postgress:/var/lib/postgresql/12/main
+    environment:
+      - PBF_PATH=/nominatim/data/merged_areas.osm.pbf
+      - FREEZE=true
+
+volumes:
+  gis-services-valhalla:
+    external: true
+    name: gis-services-valhalla
+  gis-services-maptiler:
+    external: true
+    name: gis-services-maptiler
+  gis-services-nominatim-data:
+    external: true
+    name: gis-services-nominatim-data
+  gis-services-nominatim-postgress:
+    external: true
+    name: gis-services-nominatim-postgress
