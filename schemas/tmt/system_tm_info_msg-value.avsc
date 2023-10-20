@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "InformativeMessage",
+  "namespace": "eu.driver.model.core",
+  "doc": "This is an informative message for participants, e.g. a general message or a video that should be shown.",
+  "fields": [
+    {
+      "name": "id",
+      "doc": "The unique ID of the message",
+      "type": "string"
+    },
+    {
+      "name": "type",
+      "type": {
+        "name": "Type",
+        "namespace": "eu.driver.model.tm",
+        "type": "enum",
+        "symbols": [
+          "CLEAR",
+          "BILLBOARD",
+          "TV_BROADCAST",
+          "RADIO_BROADCAST",
+          "VIDEO",
+          "AUDIO"
+        ]
+      },
+      "doc": "The type of message."
+    },
+    {
+      "name": "title",
+      "doc": "The title of the message.",
+      "type": "string"
+    },
+    {
+      "name": "headline",
+      "doc": "The headline of the message.",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "description",
+      "doc": "The longer description of the message.",
+      "type": "string"
+    },
+    {
+      "name": "filename",
+      "doc": "The filename of the audio or video file that must be played, e.g. 'flooding.mp4'.",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "comment",
+      "doc": "An optional comment to the session state.",
+      "type": ["null", "string"],
+      "default": null
+    }
+  ]
+}
