@@ -4,6 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>THW Testbed</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./assets/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./assets/site.webmanifest" />
     <link rel="stylesheet" href="./css/materialize.min.css" />
     <link rel="stylesheet" href="./css/icons-font.css" />
     <style>
@@ -58,7 +76,7 @@
           class="sidenav-trigger show-on-large"
           ><i class="material-icons">menu</i></a
         >
-        <a href="#" class="brand-logo">
+        <a target="_blank" href="#" class="brand-logo">
           <img src="./img/logo_small.webp" alt="THW Logo" class="logo" />
           <div style="position: absolute; top: 0px; left: 110px; width: 200px">
             THW Testbed
@@ -70,18 +88,23 @@
     <!-- Sidebar -->
     <ul id="slide-out" class="sidenav">
       <li>
-        <a href="http://localhost/tmt"
+        <a target="_blank" href="http://localhost/tmt"
           ><i class="material-icons">edit</i>Scenario Editor</a
         >
       </li>
       <li>
-        <a href="http://localhost/time"
+        <a target="_blank" href="http://localhost/time"
           ><i class="material-icons">access_time</i>Time</a
         >
       </li>
       <li>
-        <a href="http://localhost/mail"
+        <a target="_blank" href="http://localhost/mail"
           ><i class="material-icons">email</i>Mail Management</a
+        >
+      </li>
+      <li>
+        <a target="_blank" href="http://localhost/lfs"
+          ><i class="material-icons">attach_file</i>Large File Service</a
         >
       </li>
       <li class="sidebar-note">Note: These links are for administrators.</li>
