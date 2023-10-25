@@ -35,6 +35,7 @@ docker compose up -d
 
 - [TMT](http://localhost/tmt)
 - [Time service](http://localhost/time)
+- [Mail service](http://localhost/mail), based on this [email service](https://github.com/DRIVER-EU/email-gateway).
 - [Redpanda console](http://localhost/console)
 
 ## Exposed services
