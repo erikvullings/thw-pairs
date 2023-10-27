@@ -8,11 +8,13 @@ A working version of Docker, including Docker compose.
 
 ```bash
 cd docker
+docker compose pull
 cp .env_example .env
 ```
 
 ```dos
 cd docker
+docker compose pull
 copy .env_example .env
 ```
 
