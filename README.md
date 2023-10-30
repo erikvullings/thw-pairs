@@ -19,14 +19,14 @@ A working version of Docker, including Docker compose.
 
 ```bash
 cd docker
-docker compose pull
 cp .env_example .env
+docker compose pull
 ```
 
 ```dos
 cd docker
-docker compose pull
 copy .env_example .env
+docker compose pull
 ```
 
 ## Prepare
