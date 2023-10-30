@@ -10,6 +10,7 @@ Simple standalone GIS environment to setup some open source GIS tools locally:
 
 ```bash
 cp ./example.env ./.env
+chmod a+x *.sh
 ./initialize.sh
 ```
 
