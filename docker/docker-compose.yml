@@ -359,7 +359,7 @@ services:
       - large_file_service
 
   mailmonitor:
-    image: drivereu/driver-mailmonitor:latest
+    image: drivereu/driver-mailmonitor:oct-2023
     container_name: mailmonitor
     restart: unless-stopped
     networks:
