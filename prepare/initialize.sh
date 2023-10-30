@@ -34,6 +34,9 @@ DOCKERPROTOCOL=http
 DOCKERDOMAIN=localhost
 DOCKERPORT=80
 COUNTRIES="monaco"  # Separate countries with spaces
+VALHALLA_VERSION=3.3.0
+NOMINATIM_VERSION=4.3
+MAPTILER_VERSION=v4.6.1
 EOF
 fi
 
@@ -62,7 +65,7 @@ docker volume create gis-services-valhalla
 # Download the latest .osm.pbf files of areas specified in the AREAS array
 for AREA in "${AREAS[@]}"; do
     docker run --rm \
-    -e JAVA_TOOL_OPTIONS="-Xmx1g" \
+    -e JAVA_TOOL_OPTIONS="-Xmx8g" \
     -v gis-services-processing:/data \
     --name "gis-services-download-$AREA" \
     ghcr.io/onthegomap/planetiler:latest \
@@ -108,7 +111,7 @@ echo "========================="
 echo "== MAPTILER processing =="
 echo "========================="
 docker run --rm \
-  -e JAVA_TOOL_OPTIONS="-Xmx1g" \
+  -e JAVA_TOOL_OPTIONS="-Xmx8g" \
   -v gis-services-processing:/data \
   -v gis-services-maptiler:/maptiler \
   --name "gis-services-generating-vector-tiles" \
