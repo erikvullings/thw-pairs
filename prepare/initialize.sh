@@ -19,7 +19,7 @@ then
 fi
 
 # Check if script is already running
-if psgrep 'setup-gis-services' >/dev/null; then
+if pgrep 'setup-gis-services' >/dev/null; then
   exit_with_error "Script already running. Running services:\n
   $RUNNINGGISSERVICES \n
   Aborting script."
@@ -65,7 +65,7 @@ docker volume create gis-services-valhalla
 # Download the latest .osm.pbf files of areas specified in the AREAS array
 for AREA in "${AREAS[@]}"; do
     docker run --rm \
-    -e JAVA_TOOL_OPTIONS="-Xmx8g" \
+    -e JAVA_TOOL_OPTIONS="-Xmx16g" \
     -v gis-services-processing:/data \
     --name "gis-services-download-$AREA" \
     ghcr.io/onthegomap/planetiler:latest \
@@ -111,7 +111,7 @@ echo "========================="
 echo "== MAPTILER processing =="
 echo "========================="
 docker run --rm \
-  -e JAVA_TOOL_OPTIONS="-Xmx8g" \
+  -e JAVA_TOOL_OPTIONS="-Xmx16g" \
   -v gis-services-processing:/data \
   -v gis-services-maptiler:/maptiler \
   --name "gis-services-generating-vector-tiles" \
