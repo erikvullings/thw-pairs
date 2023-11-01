@@ -35,7 +35,6 @@ DOCKERDOMAIN=localhost
 DOCKERPORT=80
 COUNTRIES="monaco"  # Separate countries with spaces
 VALHALLA_VERSION=3.3.0
-NOMINATIM_VERSION=4.3
 MAPTILER_VERSION=v4.6.1
 EOF
 fi
@@ -58,8 +57,6 @@ MERGED_AREAS="merged_areas"
 # Create volumes for docker containers
 docker volume create gis-services-processing
 docker volume create gis-services-maptiler
-docker volume create gis-services-nominatim-data
-docker volume create gis-services-nominatim-postgress
 docker volume create gis-services-valhalla
 
 # Download the latest .osm.pbf files of areas specified in the AREAS array
@@ -77,7 +74,6 @@ done
 docker run -d -t \
   -v gis-services-processing:/processing \
   -v gis-services-maptiler:/maptiler \
-  -v gis-services-nominatim-data:/nominatim-data \
   -v gis-services-valhalla:/valhalla \
   --name gis-services-ubuntu \
   ubuntu:22.04
@@ -87,14 +83,11 @@ docker cp "$PWD/scripts" gis-services-ubuntu:/processing
 # Merge .osm.pbf files with osmium in debian container
 docker exec -t gis-services-ubuntu bash /processing/scripts/merge-osm-files.sh "$MERGED_AREAS"
 
-# Run prepare scripts to prepare processing
-docker exec -t gis-services-ubuntu bash /processing/scripts/prepare-valhalla-processing.sh "$MERGED_AREAS"
-docker exec -t gis-services-ubuntu bash /processing/scripts/prepare-nominatim-processing.sh "$MERGED_AREAS"
-
 # Valhalla processing - Build routing tiles
 echo "========================="
 echo "== VALHALLA processing =="
 echo "========================="
+docker exec -t gis-services-ubuntu bash /processing/scripts/prepare-valhalla-processing.sh "$MERGED_AREAS"
 docker run --rm \
   -v gis-services-valhalla:/custom_files \
   -e build_elevation=True \
@@ -103,7 +96,7 @@ docker run --rm \
   -e serve_tiles=False \
   -e traffic_name="" \
   --name "gis-services-valhalla-prep" \
-  ghcr.io/gis-ops/docker-valhalla/valhalla:$VALHALLA_VERSION \
+  ghcr.io/gis-ops/docker-valhalla/valhalla:"$VALHALLA_VERSION" \
   || exit_with_error "Error during Valhalla processing.  Aborting."
 
 # # Maptiler processing - Build vector tiles
@@ -118,25 +111,6 @@ docker run --rm \
   ghcr.io/onthegomap/planetiler:latest \
   --osm-path=/data/$MERGED_AREAS.osm.pbf --force --output=/maptiler/output.mbtiles \
   || exit_with_error "Error generating vector tiles.  Aborting."
-
-# Populate nominatim db
-echo "=========================="
-echo "== NOMINATIM processing =="
-echo "=========================="
-docker run -d -t --shm-size=1g \
-  -e PBF_PATH=/nominatim/data/$MERGED_AREAS.osm.pbf \
-  -e IMPORT_WIKIPEDIA=false \
-  -e FREEZE=true \
-  -v gis-services-nominatim-data:/nominatim/data/ \
-  -v gis-services-nominatim-postgress:/var/lib/postgresql/12/main \
-  --name "gis-services-nominatim-prepdb" \
-  mediagis/nominatim:$NOMINATIM_VERSION
-while [ "$(docker logs gis-services-nominatim-prepdb --tail 5 | grep -c "Nominatim is ready to accept requests")" -eq 0 ]; do
-    echo "Populating Nominatim database..."
-    sleep 2
-done
-
-docker stop gis-services-nominatim-prepdb && docker rm gis-services-nominatim-prepdb
 
 # Clean up processing folders
 docker exec -t gis-services-ubuntu bash /processing/scripts/cleanup-valhalla-processing.sh "$MERGED_AREAS"

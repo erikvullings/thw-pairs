@@ -9,6 +9,8 @@ Simple standalone GIS environment to setup some open source GIS tools locally:
 ## Preparation
 
 ```bash
+sudo apt-get update
+sudo apt-get install -y parallel
 cp ./example.env ./.env
 chmod a+x *.sh
 ./initialize.sh
