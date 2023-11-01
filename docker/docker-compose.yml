@@ -14,12 +14,6 @@ volumes:
   gis-services-maptiler:
     external: true
     name: gis-services-maptiler
-  gis-services-nominatim-data:
-    external: true
-    name: gis-services-nominatim-data
-  gis-services-nominatim-postgress:
-    external: true
-    name: gis-services-nominatim-postgress
   maildata:
     driver: local
   mailstate:
@@ -193,17 +187,17 @@ services:
 
   # https://github.com/mediagis/nominatim-docker/tree/master/4.3
   # Test http://localhost/nominatim/search?q=Monaco&format=json&addressdetails=1&limit=1&polygon_svg=1
-  nominatim:
-    container_name: gis-services-nominatim
-    image: mediagis/nominatim:${NOMINATIM_VERSION}
-    networks:
-      - tmt_network
-    volumes:
-      - gis-services-nominatim-data:/nominatim/data/
-      - gis-services-nominatim-postgress:/var/lib/postgresql/12/main
-    environment:
-      - PBF_PATH=/nominatim/data/merged_areas.osm.pbf
-      - FREEZE=true
+  # nominatim:
+  #   container_name: gis-services-nominatim
+  #   image: mediagis/nominatim:${NOMINATIM_VERSION}
+  #   networks:
+  #     - tmt_network
+  #   volumes:
+  #     - gis-services-nominatim-data:/nominatim/data/
+  #     - gis-services-nominatim-postgress:/var/lib/postgresql/12/main
+  #   environment:
+  #     - PBF_PATH=/nominatim/data/merged_areas.osm.pbf
+  #     - FREEZE=true
 
   # Mail
   large_file_service:
