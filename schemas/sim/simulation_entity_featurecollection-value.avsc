@@ -10,8 +10,8 @@
 			"type": "string"
 		},
 		{
-			"name": "style",
-			"doc": "Unique case-insensitive identifier of the feature collection style",
+			"name": "name",
+			"doc": "Optional name of the feature collection",
 			"type": [
 				"null",
 				"string"
@@ -19,8 +19,60 @@
 			"default": null
 		},
 		{
-			"name": "name",
-			"doc": "Name of the collection",
+			"name": "description",
+			"doc": "Optional description of the feature collection",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "owner",
+			"doc": "Optional unique case-insensitive identifier of the connected application owning the feature collection",
+			"type": [
+				"null",
+				"string"
+			],
+			"default": null
+		},
+		{
+			"name": "timestamp",
+			"doc": "Optional UNIX Epoch time in milliseconds marking the time the update was performed",
+			"type": [
+				"null",
+				"long"
+			],
+			"logicalType": "timestamp-millis",
+			"default": null
+		},
+		{
+			"name": "tags",
+			"doc": "Optional map containing feature collection specific information: key – unique name of the specific property; value – value of that property",
+			"type": [
+				"null",
+				{
+					"type": "map",
+					"values": "string"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "bbox",
+			"doc": "Optional bounding box around the feature collection in the following order [west, south, east, north]. Length(bbox)=2xn, where n is the number of dimensions represented in the contained geometries, with all axes of the most south-westerly point followed by all axes of the more north-easterly point. The axes order of a bbox follows the axes order of the geometries. The bbox values define shapes with edges that follow lines of constant longitude, latitude, and elevation",
+			"type": [
+				"null",
+				{
+					"type": "array",
+					"items": "double"
+				}
+			],
+			"default": null
+		},
+		{
+			"name": "style",
+			"doc": "Unique case-insensitive identifier of the feature collection style",
 			"type": [
 				"null",
 				"string"
@@ -551,67 +603,6 @@
 							}
 						]
 					}
-				}
-			],
-			"default": null
-		},
-		{
-			"name": "name",
-			"doc": "Optional name of the feature collection",
-			"type": [
-				"null",
-				"string"
-			],
-			"default": null
-		},
-		{
-			"name": "description",
-			"doc": "Optional description of the feature collection",
-			"type": [
-				"null",
-				"string"
-			],
-			"default": null
-		},
-		{
-			"name": "owner",
-			"doc": "Optional unique case-insensitive identifier of the connected application owning the feature collection",
-			"type": [
-				"null",
-				"string"
-			],
-			"default": null
-		},
-		{
-			"name": "timestamp",
-			"doc": "Optional UNIX Epoch time in milliseconds marking the time the update was performed",
-			"type": [
-				"null",
-				"long"
-			],
-			"logicalType": "timestamp-millis",
-			"default": null
-		},
-		{
-			"name": "tags",
-			"doc": "Optional map containing feature collection specific information: key – unique name of the specific property; value – value of that property",
-			"type": [
-				"null",
-				{
-					"type": "map",
-					"values": "string"
-				}
-			],
-			"default": null
-		},
-		{
-			"name": "bbox",
-			"doc": "Optional bounding box around the feature collection in the following order [west, south, east, north]. Length(bbox)=2xn, where n is the number of dimensions represented in the contained geometries, with all axes of the most south-westerly point followed by all axes of the more north-easterly point. The axes order of a bbox follows the axes order of the geometries. The bbox values define shapes with edges that follow lines of constant longitude, latitude, and elevation",
-			"type": [
-				"null",
-				{
-					"type": "array",
-					"items": "double"
 				}
 			],
 			"default": null
