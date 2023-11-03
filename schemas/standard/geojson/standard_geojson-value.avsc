@@ -5,6 +5,42 @@
   "type": "record",
   "fields": [
     {
+      "name": "id",
+      "doc": "Unique case-insensitive identifier of the feature collection",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "name",
+      "doc": "Optional name of the feature collection",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "desc",
+      "doc": "Optional description of the feature collection",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "style",
+      "doc": "Unique case-insensitive identifier of the feature collection style",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
       "name": "type",
       "type": {
         "name": "FeatureCollectionType",
