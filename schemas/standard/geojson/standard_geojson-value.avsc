@@ -5,7 +5,7 @@
   "type": "record",
   "fields": [
     {
-      "name": "id",
+      "name": "layerId",
       "doc": "Unique case-insensitive identifier of the feature collection",
       "type": [
         "null",
@@ -14,7 +14,7 @@
       "default": null
     },
     {
-      "name": "name",
+      "name": "layerName",
       "doc": "Optional name of the feature collection",
       "type": [
         "null",
@@ -23,7 +23,7 @@
       "default": null
     },
     {
-      "name": "desc",
+      "name": "layerDesc",
       "doc": "Optional description of the feature collection",
       "type": [
         "null",
@@ -32,11 +32,20 @@
       "default": null
     },
     {
-      "name": "style",
+      "name": "layerStyle",
       "doc": "Unique case-insensitive identifier of the feature collection style",
       "type": [
         "null",
         "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "layerShared",
+      "doc": "If true, the layer can be edited by others.",
+      "type": [
+        "null",
+        "boolean"
       ],
       "default": null
     },
