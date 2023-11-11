@@ -138,7 +138,7 @@ services:
     depends_on:
       - redpanda-0
     ports:
-      - "3210:3210"
+      - 3210:3210
     networks:
       - tmt_network
     environment:
@@ -157,6 +157,22 @@ services:
     volumes:
       - ./topics:/app/topics
       - trial-data:/app/trials
+
+  # MAP service
+  safr:
+    container_name: safr
+    image: erikvullings/safr:latest
+    networks:
+      - tmt_network
+    ports:
+      - 8080:8080
+    environment:
+      GROUP_ID: SAFR
+      KAFKA_HOST: redpanda-0:9092
+      SCHEMA_REGISTRY: redpanda-0:8081
+      SOCKET_PATH: /map/socket.io
+      CONSUME: standard_geojson, standard_geojson_sim, standard_named_geojson
+      VECTOR_TILE_SERVER: http://localhost/maptiler/styles/basic-preview/style.json
 
   # GIS services
 
