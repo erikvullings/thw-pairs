@@ -148,7 +148,7 @@ services:
       TRIAL_MANAGER_SERVER_PORT: 3210
       PRODUCE: >
         system_tm_phase_message,system_tm_role_player,standard_cap,standard_geojson,
-        simulation_request_startinject,simulation_entity_featurecollection,
+        simulation_request_startinject,simulation_entity_featurecollection,simulation_request_move,
         simulation_entity_post,inventory,request,resource,system_tm_info_msg
       SSL: "false"
       SSL_PFX: certs/TB-TrialMgmt.p12
