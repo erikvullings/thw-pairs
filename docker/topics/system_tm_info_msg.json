@@ -1,0 +1,97 @@
+{
+  "id": "send_billboard",
+  "label": "Send billboard or video message",
+  "icon": "subtitles",
+  "kafkaTopic": "system_tm_info_msg",
+  "default": true,
+  "ui": [
+    {
+      "id": "messageType",
+      "value": "INFO_MESSAGE",
+      "type": "none"
+    },
+    {
+      "id": "message",
+      "label": " ",
+      "className": "col s12",
+      "type": [
+        {
+          "id": "INFO_MESSAGE",
+          "label": " ",
+          "className": "col s12",
+          "type": [
+            {
+              "id": "title",
+              "label": "Title",
+              "required": true,
+              "icon": "title",
+              "className": "col s12 m8",
+              "type": "text"
+            },
+            {
+              "id": "type",
+              "label": "Message type",
+              "icon": "message",
+              "className": "col s12 m4",
+              "placeholder": "Pick one",
+              "required": true,
+              "type": "select",
+              "options": [
+                {
+                  "id": "BILLBOARD",
+                  "label": "BILLBOARD"
+                },
+                {
+                  "id": "VIDEO",
+                  "label": "VIDEO FILE"
+                },
+                {
+                  "id": "AUDIO",
+                  "label": "AUDIO FILE"
+                }
+              ]
+            },
+            {
+              "id": "headline",
+              "label": "Billboard headline",
+              "icon": "title",
+              "required": true,
+              "value": "",
+              "type": "text",
+              "show": [
+                "type=BILLBOARD"
+              ]
+            },
+            {
+              "id": "description",
+              "label": "Billboard message",
+              "icon": "note",
+              "required": false,
+              "value": "",
+              "type": "textarea",
+              "show": [
+                "type=BILLBOARD"
+              ]
+            },
+            {
+              "id": "filename",
+              "label": "Filename",
+              "placeholder": "headlines.mp4",
+              "description": "Filename of video or audio file, including extension",
+              "icon": "video_file",
+              "type": "text",
+              "show": [
+                "type=VIDEO",
+                "type=AUDIO"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "update": {
+    "title": "&message.INFO_MESSAGE.title",
+    "description": "&message.INFO_MESSAGE.description"
+  }
+}

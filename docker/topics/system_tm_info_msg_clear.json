@@ -1,0 +1,54 @@
+{
+  "id": "send_clr_billboard",
+  "label": "Clear billboard",
+  "icon": "subtitles_off",
+  "kafkaTopic": "system_tm_info_msg",
+  "default": true,
+  "ui": [
+    {
+      "id": "messageType",
+      "value": "INFO_MESSAGE",
+      "type": "none"
+    },
+    {
+      "id": "message",
+      "label": " ",
+      "className": "col s12",
+      "type": [
+        {
+          "id": "INFO_MESSAGE",
+          "label": " ",
+          "className": "col s12",
+          "type": [
+            {
+              "id": "title",
+              "label": "Title",
+              "required": true,
+              "icon": "title",
+              "className": "col s12",
+              "type": "text"
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "icon": "note",
+              "value": "",
+              "className": "col s12",
+              "type": "textarea"
+            },
+            {
+              "id": "type",
+              "label": "Message type",
+              "icon": "message",
+              "value": "CLEAR",
+              "type": "none"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "update": {
+    "title": "&message.INFO_MESSAGE.title"
+  }
+}

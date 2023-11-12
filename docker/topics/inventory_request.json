@@ -1,11 +1,11 @@
 {
-  "id": "send_inventory",
-  "label": "Send inventory",
-  "kafkaTopic": "inventory",
+  "id": "send_inventory_request",
+  "label": "Send inventory request",
+  "kafkaTopic": "request",
   "ui": [
     {
       "id": "messageType",
-      "value": "SEND_INVENTORY",
+      "value": "SEND_INVENTORY_REQUEST",
       "type": "none"
     },
     {
@@ -26,8 +26,8 @@
       "className": "col s12",
       "type": [
         {
-          "id": "SEND_INVENTORY",
-          "label": "Inventory (JSON)",
+          "id": "SEND_INVENTORY_REQUEST",
+          "label": "Inventory request (JSON)",
           "icon": "code",
           "className": "col s12",
           "type": "textarea"
@@ -35,5 +35,5 @@
       ]
     }
   ],
-  "icon": "shopping_bag"
+  "icon": "list_alt"
 }

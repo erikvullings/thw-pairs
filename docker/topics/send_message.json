@@ -1,14 +1,26 @@
 {
+  "id": "send_msg",
   "label": "Send message (JSON)",
   "icon": "attach_file",
+  "default": true,
   "ui": [
-    { "id": "messageType", "value": "SEND_MESSAGE", "type": "none" },
+    {
+      "id": "messageType",
+      "value": "SEND_MESSAGE",
+      "type": "none"
+    },
     {
       "id": "title",
       "label": "Subject",
       "icon": "title",
       "type": "text",
       "className": "col s6"
+    },
+    {
+      "id": "description",
+      "label": "Description",
+      "icon": "note",
+      "type": "textarea"
     },
     {
       "id": "message",
@@ -28,18 +40,12 @@
               "placeholder": "Pick one",
               "multiple": false,
               "required": true,
-              "type": "&kafkaTopicSet",
+              "type": "select",
               "options": "&kafkaTopics"
             }
           ]
         }
       ]
-    },
-    {
-      "id": "description",
-      "label": "Description",
-      "icon": "note",
-      "type": "textarea"
     }
   ]
 }

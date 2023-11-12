@@ -1,0 +1,53 @@
+{
+  "id": "send_clr_geojson",
+  "label": "Clear map",
+  "icon": "clear",
+  "kafkaTopic": "standard_geojson",
+  "default": true,
+  "ui": [
+    {
+      "id": "messageType",
+      "value": "GEOJSON_MESSAGE",
+      "type": "none"
+    },
+    {
+      "id": "message",
+      "label": " ",
+      "className": "col s12",
+      "type": [
+        {
+          "id": "GEOJSON_MESSAGE",
+          "label": " ",
+          "className": "col s12",
+          "type": [
+            {
+              "id": "title",
+              "label": "Title",
+              "required": true,
+              "icon": "title",
+              "value": "Clear map",
+              "className": "col s12",
+              "type": "text"
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "icon": "note",
+              "value": "",
+              "className": "col s12",
+              "type": "textarea"
+            },
+            {
+              "id": "layerId",
+              "value": "CLEAR_ALL_COLLECTIONS",
+              "type": "none"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "update": {
+    "title": "&message.GEOJSON_MESSAGE.title"
+  }
+}
