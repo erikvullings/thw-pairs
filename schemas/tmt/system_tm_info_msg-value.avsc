@@ -34,24 +34,37 @@
     {
       "name": "headline",
       "doc": "The headline of the message.",
-      "type": ["null", "string"],
+      "type": [
+        "null",
+        "string"
+      ],
       "default": null
     },
     {
       "name": "description",
       "doc": "The longer description of the message.",
-      "type": "string"
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
     },
     {
       "name": "filename",
       "doc": "The filename of the audio or video file that must be played, e.g. 'flooding.mp4'.",
-      "type": ["null", "string"],
+      "type": [
+        "null",
+        "string"
+      ],
       "default": null
     },
     {
       "name": "comment",
       "doc": "An optional comment to the session state.",
-      "type": ["null", "string"],
+      "type": [
+        "null",
+        "string"
+      ],
       "default": null
     }
   ]
