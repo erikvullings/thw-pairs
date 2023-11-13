@@ -172,7 +172,7 @@ services:
       SCHEMA_REGISTRY: redpanda-0:8081
       SOCKET_PATH: /map/socket.io
       CONSUME: standard_geojson, standard_geojson_sim, standard_named_geojson
-      VECTOR_TILE_SERVER: http://localhost/maptiler/styles/basic-preview/style.json
+      VECTOR_TILE_SERVER: /maptiler/styles/basic-preview/style.json
 
   # GIS services
 
@@ -183,6 +183,8 @@ services:
       - tmt_network
     volumes:
       - gis-services-valhalla:/custom_files
+    ports:
+      - 8002:8002
     environment:
       - use_tiles_ignore_pbf=True
       - build_elevation=False
