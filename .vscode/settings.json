@@ -1,3 +1,12 @@
 {
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "spellright.language": [
+    "en",
+    "nl"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ]
 }

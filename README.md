@@ -15,7 +15,7 @@ The whole setup can be run locally on a single PC using Docker, and is exposed o
 
 ## Prerequisites
 
-A working version of Docker, including Docker compose.
+A working version of Docker, including Docker compose. When hosting the services, make sure that you set the environment variables in the `.env` file. Especially `DOCKERDOMAIN` should be your IP address in order for serving map tiles with `maptiler` to work.
 
 ```bash
 cd docker

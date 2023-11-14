@@ -1,7 +1,11 @@
 {
   "files": [
+    "extract_from_db.json",
     "inventory.json",
     "inventory_request.json",
+    "language-options.json",
+    "request.json",
+    "resource.json",
     "resource_msg.json",
     "send_file.json",
     "send_message.json",
