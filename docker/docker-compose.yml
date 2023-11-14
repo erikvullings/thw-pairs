@@ -117,11 +117,9 @@ services:
 
   time_service:
     container_name: time
-    image: drivereu/test-bed-time-service:2.0.9
+    image: drivereu/test-bed-time-service:latest
     depends_on:
       - redpanda-0
-    ports:
-      - "8100:8100"
     networks:
       - tmt_network
     volumes:
