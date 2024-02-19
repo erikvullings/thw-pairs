@@ -32,7 +32,7 @@ services:
       # from inside the same Docker network.
       # Use the external addresses to connect to the Redpanda brokers'
       # from outside the Docker network.
-      - --advertise-kafka-addr internal://redpanda-0:9092,external://0.0.0.0:${BROKER_PORT}
+      - --advertise-kafka-addr internal://redpanda-0:9092,external://127.0.0.1:${BROKER_PORT}
       - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
       # Address the broker advertises to clients that connect to the HTTP Proxy.
       - --advertise-pandaproxy-addr internal://redpanda-0:8082,external://localhost:${REST_PORT}
@@ -115,8 +115,7 @@ services:
 
   # Services
 
-  time_service:
-    container_name: time
+  time:
     image: drivereu/test-bed-time-service:latest
     depends_on:
       - redpanda-0
@@ -223,7 +222,7 @@ services:
     depends_on:
       - redpanda-0
     ports:
-      - "9090:9090"
+      - "9099:9090"
     environment:
       HOST: localhost
       PORT: 9090
