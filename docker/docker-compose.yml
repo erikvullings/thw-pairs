@@ -48,7 +48,7 @@ services:
       - --mode dev-container
       # enable logs for debugging.
       - --default-log-level=debug
-    image: docker.redpanda.com/redpandadata/redpanda:v23.2.12
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.5
     container_name: redpanda-0
     volumes:
       - redpanda-0:/var/lib/redpanda/data
@@ -62,7 +62,7 @@ services:
 
   console:
     container_name: console
-    image: docker.redpanda.com/vectorized/console:v2.3.5
+    image: docker.redpanda.com/vectorized/console:v2.4.3
     depends_on:
       - redpanda-0
     networks:
@@ -176,7 +176,7 @@ services:
 
   valhalla:
     container_name: gis-services-valhalla
-    image: gisops/valhalla:${VALHALLA_VERSION}
+    image: ghcr.io/valhalla/valhalla:${VALHALLA_VERSION}
     networks:
       - tmt_network
     volumes:
@@ -232,6 +232,8 @@ services:
 
   mailserver:
     image: drivereu/driver-mailserver:latest
+    profiles:
+      - mail
     depends_on:
       - redpanda-0
     hostname: dockermail
@@ -324,6 +326,8 @@ services:
 
   webmail:
     image: drivereu/driver-roundcube:latest
+    profiles:
+      - mail
     hostname: webmail
     container_name: webmail
     networks:
@@ -342,6 +346,8 @@ services:
 
   mailgateway:
     image: drivereu/driver-mailgateway:latest
+    profiles:
+      - mail
     container_name: mailgateway
     networks:
       - tmt_network
@@ -370,6 +376,8 @@ services:
 
   mailmonitor:
     image: drivereu/driver-mailmonitor:oct-2023
+    profiles:
+      - mail
     container_name: mailmonitor
     restart: unless-stopped
     networks:
