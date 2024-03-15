@@ -1,7 +1,7 @@
 # THW-PAIRS
 
 A crisis management (CM) testbed for training people when responsding to (simulated) incidents, and for testing new CM applications. 
-![image](https://github.com/erikvullings/thw-pairs/assets/3140667/3c0ead3b-3fd6-4b92-87cf-b0bef662c402)
+![homepage](https://github.com/erikvullings/thw-pairs/assets/3140667/3c0ead3b-3fd6-4b92-87cf-b0bef662c402)
 
 It consists of:
 
@@ -66,3 +66,9 @@ And access the services via your browser at [http://localhost](http://localhost)
 - [Kafka REST API](http://localhost:3500/topics)
 - [Schema registry API](http://localhost:3502/subjects)
 - [Valhalla API](http://localhost/valhalla), for acting as the map routing service.
+
+### Screenshots
+
+![Traffic simulator](https://github.com/erikvullings/thw-pairs/assets/3140667/326cae0e-ca1e-45f8-87e5-f32ac926c7b8)
+![Map Service](https://github.com/erikvullings/thw-pairs/assets/3140667/20d52568-f826-4f71-a3f4-a2cee37c2648)
+
