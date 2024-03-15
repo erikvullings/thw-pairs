@@ -1,7 +1,7 @@
 # THW-PAIRS
 
 A crisis management (CM) testbed for training people when responsding to (simulated) incidents, and for testing new CM applications. 
-![image](https://github.com/erikvullings/thw-pairs/assets/3140667/f2512202-f13b-4d76-b463-2cbc6b57ac5a)
+![homepage](https://github.com/erikvullings/thw-pairs/assets/3140667/3c0ead3b-3fd6-4b92-87cf-b0bef662c402)
 
 It consists of:
 
@@ -51,17 +51,24 @@ And access the services via your browser at [http://localhost](http://localhost)
 - [TMT](http://localhost/tmt)
 - [Time service](http://localhost/time)
 - [Mail service](http://localhost/mail), based on this [email service](https://github.com/DRIVER-EU/email-gateway).
+- [Nap service](http://localhost/map), based on [c2app](https://github.com/TNO/c2app/tree/safr).
+- [Traffic simulator](http://localhost/traffic), based on [traffic-sim](https://github.com/erikvullings/traffic-sim).
 - [Redpanda console](http://localhost/console)
 
 ## Exposed services
 
 - [Kafka broker](http://localhost:3501)
 - [Schema registry](http://localhost:3502)
-- [MapTiler](http://localhost/maptiler)
+- [MapTiler](http://localhost/maptiler), for serving vectortiles of the selected region.
 
 ### APIs
 
 - [Kafka REST API](http://localhost:3500/topics)
 - [Schema registry API](http://localhost:3502/subjects)
-- [Nominatim API](http://localhost/nominatim)
-- [Valhalla API](http://localhost/valhalla)
+- [Valhalla API](http://localhost/valhalla), for acting as the map routing service.
+
+### Screenshots
+
+![Traffic simulator](https://github.com/erikvullings/thw-pairs/assets/3140667/326cae0e-ca1e-45f8-87e5-f32ac926c7b8)
+![Map Service](https://github.com/erikvullings/thw-pairs/assets/3140667/20d52568-f826-4f71-a3f4-a2cee37c2648)
+
