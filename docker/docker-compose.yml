@@ -2,7 +2,7 @@
 version: "3.9"
 
 networks:
-  tmt_network:
+  tmt_net:
     driver: bridge
 
 volumes:
@@ -48,12 +48,12 @@ services:
       - --mode dev-container
       # enable logs for debugging.
       - --default-log-level=debug
-    image: docker.redpanda.com/redpandadata/redpanda:v23.3.5
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.6
     container_name: redpanda-0
     volumes:
       - redpanda-0:/var/lib/redpanda/data
     networks:
-      - tmt_network
+      - tmt_net
     ports:
       - ${BROKER_PORT}:19092
       - ${SCHEMA_PORT}:18081
@@ -66,7 +66,7 @@ services:
     depends_on:
       - redpanda-0
     networks:
-      - tmt_network
+      - tmt_net
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     ports:
@@ -87,7 +87,7 @@ services:
   bootstrapper:
     image: docker.io/drivereu/silent-producer:3.0.9
     networks:
-      - tmt_network
+      - tmt_net
     environment:
       SLEEP: 1000 # Wait before registering schemas
       KAFKA_HOST: redpanda-0:9092
@@ -106,7 +106,7 @@ services:
     container_name: reverse-proxy
     image: nginx:stable
     networks:
-      - tmt_network
+      - tmt_net
     ports:
       - "${DOCKERPORT}:80"
     volumes:
@@ -120,7 +120,7 @@ services:
     depends_on:
       - redpanda-0
     networks:
-      - tmt_network
+      - tmt_net
     volumes:
       - ./videos:/app/videos
     environment:
@@ -137,7 +137,7 @@ services:
     ports:
       - 3210:3210
     networks:
-      - tmt_network
+      - tmt_net
     environment:
       CLIENT_ID: TB-TrialMgmt
       KAFKA_HOST: redpanda-0:9092
@@ -160,7 +160,7 @@ services:
     container_name: safr
     image: erikvullings/safr:latest
     networks:
-      - tmt_network
+      - tmt_net
     ports:
       - 8080:8080
     environment:
@@ -175,30 +175,51 @@ services:
 
   valhalla:
     container_name: gis-services-valhalla
-    image: ghcr.io/valhalla/valhalla:${VALHALLA_VERSION}
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    # image: ghcr.io/valhalla/valhalla:${VALHALLA_VERSION}
     networks:
-      - tmt_network
+      - tmt_net
     volumes:
       - gis-services-valhalla:/custom_files
     ports:
       - 8002:8002
+    stdin_open: true
+    tty: true
     environment:
       - use_tiles_ignore_pbf=True
       - build_elevation=False
       - build_admins=False
       - build_time_zones=False
-      - build_tar=False
-      - force_rebuild=False
+      - build_transit=False  # build transit, needs existing GTFS directories mapped to /gtfs_feeds
+      - build_tar=False  # build an indexed tar file from the tile_dir for faster graph loading times
+      - force_rebuild=False  # forces a rebuild of the routing tiles with "True"
+      - update_existing_config=False  # if there are new config entries in the default config, add them to the existing config
+      - serve
+      # - path_extension=graphs  # this path will be internally appended to /custom_files; no leading or trailing path separator!
+    # healthcheck: 
+    #       test: curl --fail -s http://localhost:8002/status || exit 1
+    #       interval: 1s
+    #       retries: 10
+    #       start_period: 2s
+    #       timeout: 1s
 
   maptiler:
     container_name: gis-services-maptiler
     image: maptiler/tileserver-gl:${MAPTILER_VERSION}
     networks:
-      - tmt_network
+      - tmt_net
     volumes:
       - gis-services-maptiler:/data
     command:
       - "-u ${DOCKERPROTOCOL}${DOCKERDOMAIN}:${DOCKERPORT}/maptiler"
+
+  traffic:
+    container_name: traffic
+    image: drivereu/traffic_sim:latest
+    networks:
+      - tmt_net
+    environment:
+      - VALHALLA_SERVER=http://valhalla:8002
 
   # https://github.com/mediagis/nominatim-docker/tree/master/4.3
   # Test http://localhost/nominatim/search?q=Monaco&format=json&addressdetails=1&limit=1&polygon_svg=1
@@ -206,7 +227,7 @@ services:
   #   container_name: gis-services-nominatim
   #   image: mediagis/nominatim:${NOMINATIM_VERSION}
   #   networks:
-  #     - tmt_network
+  #     - tmt_net
   #   volumes:
   #     - gis-services-nominatim-data:/nominatim/data/
   #     - gis-services-nominatim-postgress:/var/lib/postgresql/12/main
@@ -227,7 +248,7 @@ services:
       HOST: localhost
       PORT: 9090
     networks:
-      - tmt_network
+      - tmt_net
 
   mailserver:
     image: drivereu/driver-mailserver:latest
@@ -240,7 +261,7 @@ services:
     restart: unless-stopped
     container_name: mailserver
     networks:
-      - tmt_network
+      - tmt_net
     ports:
       - "25:25"
       - "143:143" # imap unsecure
@@ -330,7 +351,7 @@ services:
     hostname: webmail
     container_name: webmail
     networks:
-      - tmt_network
+      - tmt_net
     restart: unless-stopped
     environment:
       - ROUNDCUBEMAIL_DEFAULT_HOST=dockermail
@@ -349,7 +370,7 @@ services:
       - mail
     container_name: mailgateway
     networks:
-      - tmt_network
+      - tmt_net
     restart: unless-stopped
     ports:
       # websocket notifications
@@ -380,7 +401,7 @@ services:
     container_name: mailmonitor
     restart: unless-stopped
     networks:
-      - tmt_network
+      - tmt_net
     ports:
       - "4200:80"
     links:

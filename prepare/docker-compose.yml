@@ -9,7 +9,8 @@ services:
 
   valhalla:
     container_name: gis-services-valhalla
-    image: gisops/valhalla:${VALHALLA_VERSION}
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    # image: ghcr.io/valhalla/valhalla:${VALHALLA_VERSION}
     volumes:
       - gis-services-valhalla:/custom_files
     environment:

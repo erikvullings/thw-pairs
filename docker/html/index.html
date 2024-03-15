@@ -1,174 +1,143 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>THW Testbed</title>
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./assets/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./assets/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./assets/favicon-16x16.png"
-    />
-    <link rel="manifest" href="./assets/site.webmanifest" />
-    <link rel="stylesheet" href="./css/materialize.min.css" />
-    <link rel="stylesheet" href="./css/icons-font.css" />
-    <style>
-      /* Increase icon size and make them stand out */
-      .main-page-icons i.material-icons {
-        font-size: 36px;
-        color: #00bcd4;
-      }
 
-      /* Sidebar note for administrators */
-      .sidebar-note {
-        font-size: 14px;
-        color: #999;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>THW Testbed</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png" />
+  <link rel="manifest" href="./assets/site.webmanifest" />
+  <link rel="stylesheet" href="./css/materialize.min.css" />
+  <link rel="stylesheet" href="./css/icons-font.css" />
+  <style>
+    /* Increase icon size and make them stand out */
+    .main-page-icons i.material-icons {
+      font-size: 36px;
+      color: #00bcd4;
+    }
 
-      /* Set the background image */
-      body {
-        background: url(./img/background.webp) no-repeat center center fixed;
-        background-size: cover;
-      }
+    /* Sidebar note for administrators */
+    .sidebar-note {
+      font-size: 14px;
+      color: #999;
+    }
 
-      /* Logo styling */
-      .logo {
-        max-width: 100px;
-        height: auto;
-        margin-right: 10px;
-      }
+    /* Set the background image */
+    body {
+      background: url(./img/background.webp) no-repeat center center fixed;
+      background-size: cover;
+    }
 
-      /* Adjust title and subtitle */
-      .welcome-title {
-        margin-top: 30px;
-      }
+    /* Logo styling */
+    .logo {
+      max-width: 100px;
+      height: auto;
+      margin-right: 10px;
+    }
 
-      /* Link cards with distinctive backgrounds */
-      .main-page-icons .card {
-        background-color: rgba(255, 255, 255, 0.7);
-        border-radius: 10px;
-      }
-      .main-page-icons .card .card-content {
-        display: flex;
-        align-items: center;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navigation Bar -->
-    <nav>
-      <div class="nav-wrapper blue" style="position: relative">
-        <a
-          href="#"
-          data-target="slide-out"
-          class="sidenav-trigger show-on-large"
-          ><i class="material-icons">menu</i></a
-        >
-        <a target="_blank" href="#" class="brand-logo">
-          <img src="./img/logo_small.webp" alt="THW Logo" class="logo" />
-          <div style="position: absolute; top: 0px; left: 110px; width: 200px">
-            THW Testbed
-          </div>
-        </a>
-      </div>
-    </nav>
+    /* Adjust title and subtitle */
+    .welcome-title {
+      margin-top: 30px;
+    }
 
-    <!-- Sidebar -->
-    <ul id="slide-out" class="sidenav">
-      <li>
-        <a target="_blank" href="/tmt"
-          ><i class="material-icons">edit</i>TMT Scenario Editor</a
-        >
-      </li>
-      <li>
-        <a target="_blank" href="/time"
-          ><i class="material-icons">access_time</i>Time</a
-        >
-      </li>
-      <li>
-        <a target="_blank" href="/mailmonitor"
-          ><i class="material-icons">email</i>Email Monitor</a
-        >
-      </li>
-      <li>
-        <a target="_blank" href="/lfs"
-          ><i class="material-icons">attach_file</i>Large File Service</a
-        >
-      </li>
-      <li>
-        <a target="_blank" href="/maptiler"
-          ><i class="material-icons">map</i>Map tile service</a
-        >
-      </li>
-      <li>
-        <a target="_blank" href="/console"
-          ><i class="material-icons">dashboard</i>Console</a
-        >
-      </li>
-      <li class="sidebar-note">Note: These links are for administrators.</li>
-    </ul>
+    /* Link cards with distinctive backgrounds */
+    .main-page-icons .card {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+    }
 
-    <!-- Content Area -->
-    <div class="container">
-      <div
-        style="
+    .main-page-icons .card .card-content {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="nav-wrapper blue" style="position: relative">
+      <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
+      <a target="_blank" href="#" class="brand-logo">
+        <img src="./img/logo_small.webp" alt="THW Logo" class="logo" />
+        <div style="position: absolute; top: 0px; left: 110px; width: 200px">
+          THW Testbed
+        </div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <ul id="slide-out" class="sidenav">
+    <li>
+      <a target="_blank" href="/tmt"><i class="material-icons">edit</i>TMT Scenario Editor</a>
+    </li>
+    <li>
+      <a target="_blank" href="/time"><i class="material-icons">access_time</i>Time</a>
+    </li>
+    <li>
+      <a target="_blank" href="/mailmonitor"><i class="material-icons">email</i>Email Monitor</a>
+    </li>
+    <li>
+      <a target="_blank" href="/lfs"><i class="material-icons">attach_file</i>Large File Service</a>
+    </li>
+    <li>
+      <a target="_blank" href="/maptiler"><i class="material-icons">map</i>Map tile service</a>
+    </li>
+    <li>
+      <a target="_blank" href="/console"><i class="material-icons">dashboard</i>Console</a>
+    </li>
+    <li class="sidebar-note">Note: These links are for administrators.</li>
+  </ul>
+
+  <!-- Content Area -->
+  <div class="container">
+    <div style="
           background-color: #ffffffa0;
           padding: 0 10px;
           border-radius: 10px;
-        "
-      >
-        <h3 class="welcome-title">Willkommen beim THW Testbed</h3>
-        <p>Willkommen zur Testumgebung des THW (Technisches Hilfswerk).</p>
+        ">
+      <h3 class="welcome-title">Willkommen beim THW Testbed</h3>
+      <p>Willkommen zur Testumgebung des THW (Technisches Hilfswerk).</p>
 
-        <h4>Nützliche Links</h4>
-        <div class="row main-page-icons">
-          <div class="col s12 m6 l4">
-            <div class="card">
-              <a
-                class="card-content"
-                title="Öffne email"
-                target="_blank"
-                href="/webmail"
-              >
-                <i class="material-icons">email</i>
-                <span>Email</span>
-              </a>
-            </div>
+      <h4>Nützliche Links</h4>
+      <div class="row main-page-icons">
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <a class="card-content" title="Öffne email" target="_blank" href="/webmail">
+              <i class="material-icons">email</i>
+              <span>&nbsp;&nbsp;Email</span>
+            </a>
           </div>
-          <div class="col s12 m6 l4">
-            <div class="card">
-              <a
-                class="card-content"
-                title="Öffne map"
-                target="_blank"
-                href="/map"
-              >
-                <i class="material-icons">map</i>
-                <span>Map</span>
-              </a>
-            </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <a class="card-content" title="Öffne map" target="_blank" href="/map">
+              <i class="material-icons">map</i>
+              <span>&nbsp;&nbsp;Map</span>
+            </a>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <a class="card-content" title="Öffne Logistik" target="_blank" href="/traffic/#!/home">
+              <i class="material-icons">directions_car</i>
+              <span>&nbsp;&nbsp;Verkehr</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="./js/jquery-3.6.0.min.js"></script>
-    <script src="./js/materialize.min.js"></script>
-    <script>
-      // Initialize Materialize components
-      M.AutoInit();
-    </script>
-  </body>
+  <script src="./js/jquery-3.6.0.min.js"></script>
+  <script src="./js/materialize.min.js"></script>
+  <script>
+    // Initialize Materialize components
+    M.AutoInit();
+  </script>
+</body>
+
 </html>
