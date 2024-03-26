@@ -1,6 +1,4 @@
 ---
-version: "3.9"
-
 networks:
   tmt_net:
     driver: bridge
@@ -103,6 +101,7 @@ services:
   # Reverse proxy
 
   reverse-proxy:
+    restart: always
     container_name: reverse-proxy
     image: nginx:stable
     networks:
@@ -219,7 +218,7 @@ services:
     networks:
       - tmt_net
     environment:
-      - VALHALLA_SERVER=http://valhalla:8002
+      - VALHALLA_SERVER=http://gis-services-valhalla:8002
 
   # https://github.com/mediagis/nominatim-docker/tree/master/4.3
   # Test http://localhost/nominatim/search?q=Monaco&format=json&addressdetails=1&limit=1&polygon_svg=1
