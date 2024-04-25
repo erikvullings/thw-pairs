@@ -10,20 +10,35 @@
         "name": "TimeCommand",
         "namespace": "eu.driver.model.sim.config",
         "type": "enum",
-        "symbols": ["Init", "Start", "Pause", "Update", "Stop", "Reset"]
+        "symbols": [
+          "Init",
+          "Start",
+          "Pause",
+          "Update",
+          "Stop",
+          "Reset"
+        ]
       },
       "doc": "The type of command to switch the state of the time-service."
     },
     {
       "name": "simulationTime",
-      "type": ["null", "long"],
-      "default": null,
-      "logicalType": "timestamp-millis",
-      "doc": "Optional UNIX Epoch time in milliseconds marking the fictive date and time the session should run with."
+      "doc": "Optional UNIX Epoch time in milliseconds marking the fictive date and time the session should run with.",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ],
+      "default": null
     },
     {
       "name": "simulationSpeed",
-      "type": ["null", "float"],
+      "type": [
+        "null",
+        "float"
+      ],
       "default": null,
       "doc": "Optional speed factor to run the simulation. The range of this speed factor is [0, infinity)."
     }
