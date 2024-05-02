@@ -69,6 +69,6 @@ And access the services via your browser at [http://localhost](http://localhost)
 
 ### Screenshots
 
-![Traffic simulator](https://github.com/erikvullings/thw-pairs/assets/3140667/326cae0e-ca1e-45f8-87e5-f32ac926c7b8)
+![Traffic simulator](https://github.com/erikvullings/thw-pairs/assets/3140667/a0865eff-ccfc-4399-81fb-29533a8b7db5)
 ![Map Service](https://github.com/erikvullings/thw-pairs/assets/3140667/20d52568-f826-4f71-a3f4-a2cee37c2648)
 

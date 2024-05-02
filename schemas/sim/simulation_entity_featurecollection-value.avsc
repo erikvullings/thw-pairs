@@ -41,9 +41,11 @@
 			"doc": "Optional UNIX Epoch time in milliseconds marking the time the update was performed",
 			"type": [
 				"null",
-				"long"
+				{
+					"type": "long",
+					"logicalType": "timestamp-millis"
+				}
 			],
-			"logicalType": "timestamp-millis",
 			"default": null
 		},
 		{
