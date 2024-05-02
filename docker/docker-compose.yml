@@ -180,8 +180,8 @@ services:
       - tmt_net
     volumes:
       - gis-services-valhalla:/custom_files
-    ports:
-      - 8002:8002
+        #    ports:
+#       - 8002:8002
     stdin_open: true
     tty: true
     environment:

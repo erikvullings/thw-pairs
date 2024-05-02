@@ -11,7 +11,7 @@ It consists of:
 - An map tiling service using Open Street Map (OSM) data, so you can use the maps offline.
 - A map service (TODO) to show the sent maps
 
-The whole setup can be run locally on a single PC using Docker, and is exposed on [http://localhost](http://localhost). Participants will need access to this PC in order to use the email or map service, e.g. via a local network or a tunnel.
+The whole setup can be run locally on a single PC using Docker, and is exposed on [http://localhost](http://localhost). Participants will need access to this PC in order to use the email or map service, e.g. via a local network or a tunnel. For a more detailed introduction, see [here](./documentation/README.md).
 
 ## Prerequisites
 
